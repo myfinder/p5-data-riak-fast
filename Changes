@@ -1,4 +1,7 @@
 Revision history for Perl extension Data::Riak::Fast
 
+0.02    Wed Dec 26 16:39:58 2012
+        - Switch to Furl from LWP
+
 0.01    Thu Nov 15 21:23:07 2012
         - original version

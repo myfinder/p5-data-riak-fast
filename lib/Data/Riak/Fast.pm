@@ -12,7 +12,7 @@ use Data::Riak::Fast::MapReduce;
 
 use Data::Riak::Fast::HTTP;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 has transport => (
     is       => 'ro',
