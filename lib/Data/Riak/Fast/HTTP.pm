@@ -64,30 +64,6 @@ This is the instance of L<LWP::UserAgent> we use to talk to Riak.
 
 our $CONN_CACHE;
 
-has user_agent => (
-    is => 'ro',
-    isa => 'Furl',
-    lazy => 1,
-    default => sub {
-        my $self = shift;
-
-        # NOTE:
-        # Much of the following was copied from
-        # Net::Riak (franck cuny++ && robin edwards++)
-        # - SL
-
-        # The Links header Riak returns (esp. for buckets) can get really long,
-        # so here increase the MaxLineLength LWP will accept (default = 8192)
-
-        my $ua = Furl->new(
-            timeout => $self->timeout,
-            keep_alive => 1
-        );
-
-        $ua;
-    }
-);
-
 =method base_uri
 
 The base URI for the Riak server.
@@ -137,32 +113,32 @@ sub _send {
         $uri->query_form($request->query);
     }
 
-    my $headers = HTTP::Headers->new(
-        ($request->method eq 'GET' ? ('Accept' => $request->accept) : ()),
-        ($request->method eq 'POST' || $request->method eq 'PUT' ? ('Content-Type' => $request->content_type) : ()),
-    );
-
+    my @headers;
+    push @headers, 'Accept' => $request->accept if $request->method eq 'GET';
+    push @headers, 'Content-Type' => $request->content_type if $request->method =~ /^(POST|PUT)$/;
     if(my $links = $request->links) {
-        $headers->header('Link' => $request->links);
+        push @headers, 'Link' => $request->links;
     }
 
     if(my $indexes = $request->indexes) {
         foreach my $index (@{$indexes}) {
             my $field = $index->{field};
             my $values = $index->{values};
-            $headers->header(":X-Riak-Index-$field" => $values);
+            push @headers, ":X-Riak-Index-$field" => $values;
         }
     }
 
-    my $http_request = HTTP::Request->new(
-        $request->method => $uri->as_string,
-        $headers,
-        $request->data
+    my $furl = Furl::HTTP->new(
+        agent   => "Data::Riak::Fast/$Data::Riak::Fast::VERSION",
+        timeout => $self->timeout,
     );
-
-    my $furl_response = $self->user_agent->request($http_request);
-    my $http_response = $furl_response->as_http_response;
-    $http_response->request($http_request);
+    my ( $mv, $code, $msg, $headers, $content ) = $furl->request(
+        method  => $request->method,
+        url     => $uri->as_string,
+        headers => \@headers,
+        content => $request->data,
+    );
+    my $http_response = HTTP::Response->new($code, $msg, $headers, $content);
 
     my $response = Data::Riak::Fast::HTTP::Response->new({
         http_response => $http_response
