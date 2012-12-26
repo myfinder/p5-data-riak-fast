@@ -4,12 +4,14 @@ use Mouse;
 
 use JSON::XS qw/decode_json/;
 
-#use Data::Riak::Fast::Result;
+use Data::Riak::Fast::Result;
 use Data::Riak::Fast::ResultSet;
-#use Data::Riak::Fast::Bucket;
-#use Data::Riak::Fast::MapReduce;
+use Data::Riak::Fast::Bucket;
+use Data::Riak::Fast::MapReduce;
 
 use Data::Riak::Fast::HTTP;
+
+our $VERSION = '0.01';
 
 has transport => (
     is       => 'ro',
@@ -90,6 +92,17 @@ sub linkwalk {
             method => 'GET',
             uri => $request_str
     });
+}
+
+sub stats {
+    my $self = shift;
+
+    return decode_json(
+        $self->send_request({
+            method => 'GET',
+            uri => '/stats',
+        })->first->value
+    );
 }
 
 __PACKAGE__->meta->make_immutable;

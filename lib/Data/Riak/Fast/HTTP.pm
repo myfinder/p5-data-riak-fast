@@ -3,8 +3,7 @@ package Data::Riak::Fast::HTTP;
 
 use Mouse;
 
-use LWP::UserAgent;
-use LWP::ConnCache;
+use Furl;
 use HTTP::Headers;
 use HTTP::Response;
 use HTTP::Request;
@@ -67,7 +66,7 @@ our $CONN_CACHE;
 
 has user_agent => (
     is => 'ro',
-    isa => 'LWP::UserAgent',
+    isa => 'Furl',
     lazy => 1,
     default => sub {
         my $self = shift;
@@ -79,18 +78,11 @@ has user_agent => (
 
         # The Links header Riak returns (esp. for buckets) can get really long,
         # so here increase the MaxLineLength LWP will accept (default = 8192)
-        my %opts = @LWP::Protocol::http::EXTRA_SOCK_OPTS;
-        $opts{MaxLineLength} = 65_536;
-        @LWP::Protocol::http::EXTRA_SOCK_OPTS = %opts;
 
-        my $ua = LWP::UserAgent->new(
+        my $ua = Furl->new(
             timeout => $self->timeout,
             keep_alive => 1
         );
-
-        $CONN_CACHE ||= LWP::ConnCache->new;
-
-        $ua->conn_cache( $CONN_CACHE );
 
         $ua;
     }
@@ -168,7 +160,9 @@ sub _send {
         $request->data
     );
 
-    my $http_response = $self->user_agent->request($http_request);
+    my $furl_response = $self->user_agent->request($http_request);
+    my $http_response = $furl_response->as_http_response;
+    $http_response->request($http_request);
 
     my $response = Data::Riak::Fast::HTTP::Response->new({
         http_response => $http_response

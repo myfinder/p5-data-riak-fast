@@ -11,6 +11,7 @@ use Data::Riak::Fast::Bucket;
 
 BEGIN {
     skip_unless_riak;
+    skip_unless_leveldb;
 }
 
 my $riak = Data::Riak::Fast->new(transport => Data::Riak::Fast::HTTP->new);
