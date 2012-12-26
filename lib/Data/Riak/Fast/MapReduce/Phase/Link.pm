@@ -19,7 +19,7 @@ A map/reduce link phase for Data::Riak::Fast
     keep  => 0
   );
 
-=attr bucket
+=head2 bucket
 
 The name of the bucket from which links should be followed.
 
@@ -37,7 +37,7 @@ has phase => (
     default => 'link'
 );
 
-=attr tag
+=head2 tag
 
 The name of the tag of links that should be followed
 
@@ -49,7 +49,8 @@ has tag => (
     predicate => 'has_tag'
 );
 
-=method pack
+=head1 METHOD
+=head2 pack()
 
 Serialize this link phase.
 

@@ -20,12 +20,12 @@ A map/reduce map phase for Data::Riak::Fast
     keep => 1 # The default
   );
 
-=attr keep
+=head2 keep
 
 Flag controlling whether the results of this phase are included in the final
 result of the map/reduce. Defaults to true.
 
-=attr language
+=head2 language
 
 The language used with this phase.  One of C<javascript> or C<erlang>. This
 attribute is required.
@@ -38,7 +38,7 @@ has language => (
   required => 1
 );
 
-=attr name
+=head2 name
 
 The name, used with built-in functions provided by Riak such as
 C<Riak.mapValues>.
@@ -57,7 +57,7 @@ has phase => (
   default => 'map'
 );
 
-=attr arg
+=head2 arg
 
 The static argument passed to the map function.
 
@@ -69,7 +69,7 @@ has arg => (
   predicate => 'has_arg'
 );
 
-=attr module
+=head2 module
 
 The module name, if you are using a riak built-in function.
 
@@ -81,7 +81,7 @@ has module => (
   predicate => 'has_module'
 );
 
-=attr function
+=head2 function
 
 The function name, if you are using a riak built-in function.
 
@@ -93,7 +93,7 @@ has function => (
   predicate => 'has_function'
 );
 
-=attr source
+=head2 source
 
 The source of the function used in this phase.
 
@@ -105,7 +105,8 @@ has source => (
   predicate => 'has_source'
 );
 
-=method pack
+=head1 METHOD
+=head2 pack()
 
 Serialize this map phase.
 

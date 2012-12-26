@@ -12,7 +12,7 @@ use Data::Riak::Fast;
 use Data::Riak::Fast::HTTP::Request;
 use Data::Riak::Fast::HTTP::Response;
 
-=attr host
+=head2 host
 
 The host the Riak server is on. Can be set via the environment variable
 DATA_RIAK_HTTP_HOST, and defaults to 127.0.0.1.
@@ -27,7 +27,7 @@ has host => (
     }
 );
 
-=attr port
+=head2 port
 
 The port of the host that the riak server is on. Can be set via the environment
 variable DATA_RIAK_HTTP_PORT, and defaults to 8098.
@@ -42,7 +42,7 @@ has port => (
     }
 );
 
-=attr timeout
+=head2 timeout
 
 The maximum value (in seconds) that a request can go before timing out. Can be set
 via the environment variable DATA_RIAK_HTTP_TIMEOUT, and defaults to 15.
@@ -57,7 +57,7 @@ has timeout => (
     }
 );
 
-=attr user_agent
+=head2 user_agent
 
 This is the instance of L<LWP::UserAgent> we use to talk to Riak.
 
@@ -65,7 +65,8 @@ This is the instance of L<LWP::UserAgent> we use to talk to Riak.
 
 our $CONN_CACHE;
 
-=method base_uri
+=head1 METHOD
+=head2 base_uri
 
 The base URI for the Riak server.
 
@@ -76,7 +77,7 @@ sub base_uri {
     return sprintf('http://%s:%s/', $self->host, $self->port);
 }
 
-=method ping
+=head2 ping
 
 Tests to see if the specified Riak server is answering. Returns 0 for no, 1 for yes.
 
@@ -89,7 +90,7 @@ sub ping {
     return 1;
 }
 
-=method send ($request)
+=head2 send ($request)
 
 Send a Data::Riak::Fast::HTTP::Request to the server. If you pass in a hashref, it will
 create the Request object for you on the fly.
