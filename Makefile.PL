@@ -13,7 +13,7 @@ requires 'Try::Tiny';
 requires 'URI';
 requires 'URL::Encode';
 
-tests 't/*.t';
+tests_recursive;
 author_tests 'xt';
 
 test_requires 'Test::More';
