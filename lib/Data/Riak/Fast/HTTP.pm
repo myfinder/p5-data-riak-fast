@@ -8,6 +8,7 @@ use HTTP::Headers;
 use HTTP::Response;
 use HTTP::Request;
 
+use Data::Riak::Fast;
 use Data::Riak::Fast::HTTP::Request;
 use Data::Riak::Fast::HTTP::Response;
 
@@ -83,7 +84,7 @@ Tests to see if the specified Riak server is answering. Returns 0 for no, 1 for 
 
 sub ping {
     my $self = shift;
-    my $response = $self->send({ method => 'GET', uri => 'ping' });
+    my ($response,) = $self->send({ method => 'GET', uri => 'ping' });
     return 0 unless($response->code eq '200');
     return 1;
 }
@@ -100,8 +101,8 @@ sub send {
     unless(blessed $request) {
         $request = Data::Riak::Fast::HTTP::Request->new($request);
     }
-    my $response = $self->_send($request);
-    return $response;
+    my ($response, $url) = $self->_send($request);
+    return $response, $url;
 }
 
 sub _send {
@@ -144,7 +145,7 @@ sub _send {
         http_response => $http_response
     });
 
-    return $response;
+    return $response, $uri;
 }
 
 =begin :postlude

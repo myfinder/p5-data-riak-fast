@@ -3,6 +3,7 @@ package Data::Riak::Fast;
 use Mouse;
 
 use JSON::XS qw/decode_json/;
+use URI;
 
 use Data::Riak::Fast::Result;
 use Data::Riak::Fast::ResultSet;
@@ -26,7 +27,7 @@ has transport => (
 sub send_request {
     my ($self, $request) = @_;
 
-    my $response = $self->transport->send($request);
+    my ($response, $uri) = $self->transport->send($request);
 
     if ($response->is_error) {
         die $response;
@@ -35,13 +36,25 @@ sub send_request {
     my @parts = @{ $response->parts };
 
     return unless @parts;
-    return Data::Riak::Fast::ResultSet->new({
-        results => [
-            map {
-                Data::Riak::Fast::Result->new({ riak => $self, http_message => $_ })
-            } @parts
-        ],    
-    });
+    return Data::Riak::Fast::ResultSet->new(
+        {
+            results => [
+                map {
+                    Data::Riak::Fast::Result->new(
+                        {
+                            riak         => $self,
+                            http_message => $_,
+                            location     => (
+                                $_->header('location')
+                                ? URI->new( $_->header('location') )
+                                : $uri
+                            )
+                        }
+                    );
+                } @parts
+            ],
+        }
+    );
 }
 
 sub _buckets {
