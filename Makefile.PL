@@ -18,6 +18,7 @@ author_tests 'xt';
 
 test_requires 'Test::More';
 test_requires 'Test::Fatal';
+test_requires 'Test::Memory::Cycle';
 auto_set_repository;
 auto_include;
 WriteAll;
