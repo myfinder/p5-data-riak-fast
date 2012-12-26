@@ -8,3 +8,9 @@ __DATA__
 Tatsuro Hisamori
 myfinder@cpan.org
 Data::Riak::Fast
+riak
+MapReduce
+mapreduce
+UUID
+metadata
+arg

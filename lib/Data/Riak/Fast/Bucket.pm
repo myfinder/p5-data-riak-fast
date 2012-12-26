@@ -22,7 +22,7 @@ Data::Riak::Fast::Bucket is the primary interface that most people will use for 
 Adding and removing keys and values, adding links, querying keys; all of those
 happen here.
 
-=head SYNOPSIS
+=head1 SYNOPSIS
 
     my $bucket = Data::Riak::Fast::Bucket->new({
         name => 'my_bucket',
@@ -57,7 +57,8 @@ has name => (
     required => 1
 );
 
-=method add ($key, $value, $opts)
+=head1 METHOD
+=head2 add ($key, $value, $opts)
 
 This will insert a key C<$key> into the bucket, with value C<$value>. The C<$opts>
 can include links, allowed content types, or queries.
@@ -108,7 +109,7 @@ sub add {
     return;
 }
 
-=method remove ($key, $opts)
+=head2 remove ($key, $opts)
 
 This will remove a key C<$key> from the bucket.
 
@@ -128,7 +129,7 @@ sub remove {
     });
 }
 
-=method get ($key, $opts)
+=head2 get ($key, $opts)
 
 This will get a key C<$key> from the bucket, returning a L<Data::Riak::Fast::Result> object.
 
@@ -157,7 +158,7 @@ sub get {
     })->first;
 }
 
-=method list_keys
+=head2 list_keys
 
 List all the keys in the bucket. Warning: This is expensive, as it has to scan
 every key in the system, so don't use it unless you mean it, and know what you're
@@ -178,7 +179,7 @@ sub list_keys {
     return decode_json( $result->value )->{'keys'};
 }
 
-=method count
+=head2 count
 
 Count all the keys in a bucket. This uses MapReduce to figure out the answer, so
 it's expensive; Riak does not keep metadata on buckets for reasons that are beyond
@@ -202,7 +203,7 @@ sub count {
     return $count->[0];
 }
 
-=method remove_all
+=head2 remove_all
 
 Remove all the keys from a bucket. This involves a list_keys call, so it will be
 slow on larger systems.
@@ -233,7 +234,7 @@ sub create_link {
 
 sub linkwalk {
     my ($self, $object, $params) = @_;
-    return undef unless $params;
+    return unless $params;
     return $self->riak->linkwalk({
         bucket => $self->name,
         object => $object,
@@ -241,7 +242,7 @@ sub linkwalk {
     });
 }
 
-=method search_index
+=head2 search_index
 
 Searches a Secondary Index to find results.
 
@@ -313,7 +314,7 @@ sub indexing {
     });
 }
 
-=method create_alias ($opts)
+=head2 create_alias ($opts)
 
 Creates an alias for a record using links. Helpful if your primary ID is a UUID or
 some other automatically generated identifier. Can cross buckets, as well.
@@ -329,7 +330,7 @@ sub create_alias {
     $bucket->add($opts->{as}, $opts->{key}, { links => [ Data::Riak::Fast::Link->new( bucket => $bucket->name, riaktag => 'perl-data-riak-alias', key => $opts->{key} )] });
 }
 
-=method resolve_alias ($alias)
+=head2 resolve_alias ($alias)
 
 Returns the L<Data::Riak::Fast::Result> that $alias points to.
 

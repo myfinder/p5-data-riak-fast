@@ -60,7 +60,7 @@ A map/reduce query.
 
     my $results = $mr->mapreduce;
 
-=attr inputs
+=head2 inputs
 
 Inputs to this query.  There are few allowable forms.
 
@@ -86,7 +86,7 @@ has inputs => (
     required => 1
 );
 
-=attr phases
+=head2 phases
 
 An arrayref of phases that will be executed in order.  The phases should be
 one of L<Data::Riak::Fast::MapReduce::Phase::Link>,
@@ -100,7 +100,8 @@ has phases => (
     required => 1
 );
 
-=method mapreduce
+=head1 METHOD
+=head2 mapreduce
 
 Execute the mapreduce query.
 

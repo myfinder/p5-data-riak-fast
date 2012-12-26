@@ -113,7 +113,7 @@ sub save {
 
 sub linkwalk {
     my ($self, $params) = @_;
-    return undef unless $params;
+    return unless $params;
     return $self->riak->linkwalk({
         bucket => $self->bucket_name,
         object => $self->key,
@@ -123,7 +123,7 @@ sub linkwalk {
 
 sub add_link {
     my ($self, $link) = @_;
-    return undef unless $link;
+    return unless $link;
     my $links = $self->links;
     push @{$links}, $link;
     $self->links($links);
