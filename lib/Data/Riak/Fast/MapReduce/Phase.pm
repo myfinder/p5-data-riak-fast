@@ -7,12 +7,13 @@ use Mouse::Role;
 The Phase role contains common code used by all the Data::Riak::Fast::MapReduce
 phase classes.
 
-=attr keep
+=head2 keep
 
 Flag controlling whether the results of this phase are included in the final
 result of the map/reduce.
 
-=method pack
+=head1 METHOD
+=head2 pack()
 
 The C<pack> method is required to be implemented by consumers of this role.
 
