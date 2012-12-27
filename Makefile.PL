@@ -4,6 +4,8 @@ all_from 'lib/Data/Riak/Fast.pm';
 
 requires 'Digest::MD5';
 requires 'Furl';
+requires 'Net::DNS::Lite';
+requires 'Cache::LRU';
 requires 'HTTP::Headers::ActionPack';
 requires 'HTTP::Message';
 requires 'JSON::XS';

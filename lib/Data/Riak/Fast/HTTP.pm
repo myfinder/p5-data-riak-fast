@@ -4,6 +4,8 @@ package Data::Riak::Fast::HTTP;
 use Mouse;
 
 use Furl;
+use Net::DNS::Lite;
+use Cache::LRU;
 use HTTP::Headers;
 use HTTP::Response;
 use HTTP::Request;
@@ -51,7 +53,7 @@ via the environment variable DATA_RIAK_HTTP_TIMEOUT, and defaults to 15.
 
 has timeout => (
     is => 'ro',
-    isa => 'Int',
+    isa => 'Num',
     default => sub {
         $ENV{'DATA_RIAK_HTTP_TIMEOUT'} || '15';
     }
@@ -62,8 +64,6 @@ has timeout => (
 This is the instance of L<LWP::UserAgent> we use to talk to Riak.
 
 =cut
-
-our $CONN_CACHE;
 
 =head1 METHOD
 =head2 base_uri
@@ -130,9 +130,14 @@ sub _send {
         }
     }
 
+    $Net::DNS::Lite::CACHE = Cache::LRU->new(
+        size => 256,
+    );
+
     my $furl = Furl::HTTP->new(
         agent   => "Data::Riak::Fast/$Data::Riak::Fast::VERSION",
         timeout => $self->timeout,
+        inet_aton => \&Net::DNS::Lite::inet_aton,
     );
     my ( $mv, $code, $msg, $headers, $content ) = $furl->request(
         method  => $request->method,
