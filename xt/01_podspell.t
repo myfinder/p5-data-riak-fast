@@ -14,3 +14,4 @@ mapreduce
 UUID
 metadata
 arg
+URI
